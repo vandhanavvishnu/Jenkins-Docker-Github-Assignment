@@ -87,28 +87,48 @@
 
 
 
-FROM jenkins/jenkins:lts
-USER root
+#FROM jenkins/jenkins:lts
+#USER root
 
 # Install necessary dependencies
+#RUN apt-get update -qq \
+ #   && apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common
+
+# Add Docker’s official GPG key
+#RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+# Add the Docker APT repository
+#RUN echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+
+# Update repositories and install Docker CE
+#RUN apt-get update -qq \
+ #   && apt-get install -y docker-ce docker-ce-cli containerd.io
+
+# Add Jenkins user to the Docker group
+#RUN usermod -aG docker jenkins
+
+# Switch back to the Jenkins user
+#USER jenkins
+
+
+
+FROM jenkins/jenkins:lts
+
+USER root
+
+# Install necessary packages
 RUN apt-get update -qq \
     && apt-get install -qqy apt-transport-https ca-certificates curl gnupg2 software-properties-common
 
-# Add Docker’s official GPG key
-RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+# Add Docker's official GPG key
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
 
-# Add the Docker APT repository
-RUN echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+# Use 'bullseye' codename for compatibility
+RUN echo "deb [arch=amd64] https://download.docker.com/linux/debian bullseye stable" > /etc/apt/sources.list.d/docker.list
 
-# Update repositories and install Docker CE
+# Install Docker CE
 RUN apt-get update -qq \
-    && apt-get install -y docker-ce docker-ce-cli containerd.io
+    && apt-get install -qqy docker-ce
 
 # Add Jenkins user to the Docker group
 RUN usermod -aG docker jenkins
-
-# Switch back to the Jenkins user
-USER jenkins
-
-
-
