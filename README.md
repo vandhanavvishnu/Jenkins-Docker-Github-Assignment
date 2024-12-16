@@ -38,10 +38,3 @@ echo $JAVA_HOME
 #### 9. Configure Jenkins Build Script
 #### 10. Verify Build and Deployment:
 - Commit changes to GitHub and ensure Jenkins automatically builds and deploys the Docker image.
-
-## Screenshot of the Jenkins project and Build status:
-
-
-
-
-
